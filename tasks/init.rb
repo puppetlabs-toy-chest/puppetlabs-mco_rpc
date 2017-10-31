@@ -3,10 +3,9 @@
 require 'json'
 require 'mcollective'
 
-
 class MCollective::Connector::NullConn
   def error
-    raise NotImplementedError.new("Connection is not available when running agent as a task")
+    raise NotImplementedError, 'Connection is not available when running agent as a task'
   end
 
   def connect
@@ -17,7 +16,7 @@ class MCollective::Connector::NullConn
     error
   end
 
-  def publish(msg)
+  def publish(_msg)
     error
   end
 
@@ -25,11 +24,11 @@ class MCollective::Connector::NullConn
     error
   end
 
-  def subscribe(agent, type, collective)
+  def subscribe(_agent, _type, _collective)
     error
   end
 
-  def unsubscribe(agent, type, collective)
+  def unsubscribe(_agent, _type, _collective)
     error
   end
 end
@@ -44,7 +43,7 @@ class MCollective::PuppetTask
       @result = {
         kind: kind,
         msg: msg,
-        details: details || {}
+        details: details || {},
       }
     end
   end
@@ -58,11 +57,11 @@ class MCollective::PuppetTask
   def loadconfig
     unless @configloaded
       if MCollective::Util.windows?
-        configfile = File.join(MCollective::Util.windows_prefix, "etc", "server.cfg")
+        configfile = File.join(MCollective::Util.windows_prefix, 'etc', 'server.cfg')
       else
         # search for the server.cfg in the AIO path then the traditional one
         configfiles = ['/etc/puppetlabs/mcollective/server.cfg',
-                       '/etc/mcollective/server.cfg' ]
+                       '/etc/mcollective/server.cfg']
 
         found = configfiles.find_index { |file| File.readable?(file) }
 
@@ -82,13 +81,12 @@ class MCollective::PuppetTask
   def agents
     @agents ||= begin
       agents = MCollective::PluginManager.find_and_load('agent')
-      agents.reduce({}) do |m, agent|
+      agents.each_with_object({}) do |agent, m|
         cls = Kernel.const_get(agent)
         if cls.ancestors.include?(MCollective::RPC::Agent) && cls.activate?
           inst = cls.new
           m[inst.ddl.meta[:name]] = inst
         end
-        m
       end
     end
   end
@@ -98,9 +96,9 @@ class MCollective::PuppetTask
       result[:data]
     else
       raise TaskError.new('puppetlabs.mco_rpc/mco_error',
-          result[:statusmsg],
-          { statuscode: result[:statuscode],
-            data: result[:data] })
+                          result[:statusmsg],
+                          statuscode: result[:statuscode],
+                          data: result[:data])
     end
   end
 
@@ -108,8 +106,8 @@ class MCollective::PuppetTask
     agent = agents[@params[:agent]]
     if agent.nil?
       raise TaskError.new('puppetlabs.mco_rpc/unknown-agent',
-        "'#{@params[:agent]}' is not available.",
-        { agent: @params[:agent] })
+                          "'#{@params[:agent]}' is not available.",
+                          agent: @params[:agent])
     end
     agent
   end
@@ -122,25 +120,24 @@ class MCollective::PuppetTask
   end
 
   def run_action
-    begin
-      result = get_agent.handlemsg(mco_message, @conn)
-      if result.nil?
-        { _output: 'Agent did not produce a result.' }
-      else
-        process_result(result)
-      end
-    rescue TaskError => e
-      { _error: e.result }
-    rescue Exception => e
-      { _error: {
-        kind: 'puppetlabs.mco_rpc/unknown_error',
-        msg: e.message,
-        details: { } } }
+    result = get_agent.handlemsg(mco_message, @conn)
+    if result.nil?
+      { _output: 'Agent did not produce a result.' }
+    else
+      process_result(result)
     end
+  rescue TaskError => e
+    { _error: e.result }
+  rescue Exception => e
+    { _error: {
+      kind: 'puppetlabs.mco_rpc/unknown_error',
+      msg: e.message,
+      details: {},
+    } }
   end
 end
 
-if __FILE__ == $0
+if $PROGRAM_NAME == __FILE__
   params = JSON.parse(STDIN.read, symbolize_names: true)
   runner = MCollective::PuppetTask.new(params)
   runner.loadconfig
