@@ -1,0 +1,21 @@
+{
+  "description": "Run installed MCO RPC agents on the target",
+  "parameters": {
+    "agent": {
+      "description": "The agent to run",
+      "type": "String[1]"
+    },
+    "action": {
+      "description": "The action to take with the agent",
+      "type": "String[1]"
+    },
+    "data": {
+      "description": "A hash of data to pass to the agent",
+      "type": "Optional[Hash]"
+    },
+    "arguments": {
+      "description": "MCO CLI formatted arguments(mutually exclusive with 'data')",
+      "type": "Optional[String[1]]"
+    }
+  }
+}
