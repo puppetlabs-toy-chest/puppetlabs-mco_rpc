@@ -2,6 +2,7 @@
 
 require 'json'
 require 'mcollective'
+require 'mcollective/application/rpc'
 
 class MCollective::Connector::NullConn
   def error
@@ -119,6 +120,31 @@ class MCollective::PuppetTask
     } }
   end
 
+  def init_data
+    if  @params[:arguments]
+      if @params[:data] && !@params[:data].empty?
+        raise TaskError.new('puppetlabs.mco_rpc/invalid_args',
+                            "Cannot pass both arguments and data '#{arg}'")
+      end
+      @params[:data] = {}
+      @params[:arguments].split.each do |arg|
+        # This is the regex MCO uses.
+        if arg =~ /^(.+?)=(.+)$/
+          @params[:data][$1.to_sym] = $2
+        else
+          raise TaskError.new('puppetlabs.mco_rpc/invalid_args',
+                              "Cannot parse argument '#{arg}'")
+        end
+      end
+      app = MCollective::Application.new.rpcclient(@params[:agent])
+      ddl = app.ddl ? app.ddl.entities[@params[:action]] : {}
+      MCollective::Application::Rpc.new.string_to_ddl_type(@params[:data], ddl)
+    else
+      @params[:data] ||= {}
+    end
+
+  end
+
   def run_action
     result = get_agent.handlemsg(mco_message, @conn)
     if result.nil?
@@ -141,6 +167,7 @@ if $PROGRAM_NAME == __FILE__
   params = JSON.parse(STDIN.read, symbolize_names: true)
   runner = MCollective::PuppetTask.new(params)
   runner.loadconfig
+  runner.init_data
   result = runner.run_action
   puts result.to_json
 end
