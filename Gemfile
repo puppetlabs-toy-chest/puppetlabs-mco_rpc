@@ -44,7 +44,7 @@ group :system_tests do
   gem "beaker-abs", *location_for(ENV['BEAKER_ABS_VERSION'] || '~> 0.1')
   gem "puppet-blacksmith", '~> 3.4',                                             :require => false
   gem "vagrant-wrapper"
-  gem "beaker-task_helper", git: 'git@github.com:puppetlabs/beaker-task_helper.git', branch: 'master'
+  gem "beaker-task_helper", git: 'https://github.com/puppetlabs/beaker-task_helper.git', branch: 'master'
 end
 
 puppet_version = ENV['PUPPET_GEM_VERSION']

@@ -3,4 +3,4 @@
 ---
 fixtures:
   repositories:
-    package_agent: 'git@github.com:puppetlabs/mcollective-package-agent.git'
+    package_agent: 'https://github.com/puppetlabs/mcollective-package-agent.git'

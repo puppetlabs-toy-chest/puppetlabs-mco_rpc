@@ -136,13 +136,11 @@ class MCollective::PuppetTask
                               "Cannot parse argument '#{arg}'")
         end
       end
-      app = MCollective::Application.new.rpcclient(@params[:agent])
-      ddl = app.ddl ? app.ddl.entities[@params[:action]] : {}
+      ddl = get_agent.ddl ? get_agent.ddl.entities[@params[:action]] : {}
       MCollective::Application::Rpc.new.string_to_ddl_type(@params[:data], ddl)
     else
       @params[:data] ||= {}
     end
-
   end
 
   def run_action
