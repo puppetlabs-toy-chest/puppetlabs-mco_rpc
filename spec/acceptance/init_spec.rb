@@ -4,7 +4,6 @@ require 'spec_helper_acceptance'
 describe 'package task' do
   describe 'install' do
     before(:all) do
-      apply_manifest('package { "nano": ensure => absent, }')
       hosts.each do |h|
         plugindir = if h.platform =~ %r{windows}
                       'C:/ProgramData/PuppetLabs/mcollective/etc/plugins/mcollective/agent'
@@ -20,6 +19,10 @@ describe 'package task' do
           scp_to(h, fh, plugindir)
         end
       end
+    end
+
+    before(:each) do
+      apply_manifest('package { "nano": ensure => absent, }')
     end
 
     it 'errors for uninstalled agents' do
@@ -41,6 +44,15 @@ describe 'package task' do
       params = { agent: 'package',
                  action: 'install',
                  data: { package: 'nano' } }
+      result = run_task(task_name: 'mco_rpc', params: params)
+      expect_multiple_regexes(result: result, regexes: [%r{output}, %r{release}])
+    end
+
+    it 'runs the package agent with arguments' do
+      params = { agent: 'package',
+                 action: 'install',
+                 #data: { package: 'nano' } }
+                 arguments: 'package=nano' }
       result = run_task(task_name: 'mco_rpc', params: params)
       expect_multiple_regexes(result: result, regexes: [%r{output}, %r{release}])
     end
