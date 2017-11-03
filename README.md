@@ -30,7 +30,7 @@ bolt task run mco_rpc --modulepath $MODULEPATH --nodes $TARGETNODES agent=pacakg
 To run the package task with `puppet task`
 
 ```
-puppet-task run mco_rpc $TARGETS agent=pacakge action=install args='package=nano'
+puppet-task run mco_rpc $TARGETS agent=pacakge action=install arguments='package=nano'
 ```
 
 ## Reference
@@ -45,6 +45,11 @@ puppet-task run mco_rpc $TARGETS agent=pacakge action=install args='package=nano
 
 `data Optional[Hash]`:
   The options to pass to to the action. These vary per action.
+
+`arguments Optional[String]`:
+  A single string or arguments to the action as might be passed to the mco CLI
+  ie. 'package=nano verson=2.8.7' This parameter and data are mutually
+  exclusive.
 
 ## Limitations
 
