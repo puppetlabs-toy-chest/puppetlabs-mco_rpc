@@ -51,7 +51,6 @@ describe 'package task' do
     it 'runs the package agent with arguments' do
       params = { agent: 'package',
                  action: 'install',
-                 #data: { package: 'nano' } }
                  arguments: 'package=nano' }
       result = run_task(task_name: 'mco_rpc', params: params)
       expect_multiple_regexes(result: result, regexes: [%r{output}, %r{release}])
