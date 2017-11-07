@@ -24,13 +24,13 @@ there is no need for MCO middleware or messaging services.
 To run the package task with `bolt`
 
 ```
-bolt task run mco_rpc --modulepath $MODULEPATH --nodes $TARGETNODES agent=pacakge action=install args='package=nano'
+bolt task run mco_rpc --modulepath $MODULEPATH --nodes $TARGETNODES agent=package action=install args='package=nano'
 ```
 
 To run the package task with `puppet task`
 
 ```
-puppet-task run mco_rpc $TARGETS agent=pacakge action=install arguments='package=nano'
+puppet-task run mco_rpc $TARGETS agent=package action=install arguments='package=nano'
 ```
 
 ## Reference
