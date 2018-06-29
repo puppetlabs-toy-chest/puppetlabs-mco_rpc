@@ -26,34 +26,41 @@ describe 'package task' do
     end
 
     it 'errors for uninstalled agents' do
-      result = run_task(task_name: 'mco_rpc', params: 'agent=nonexistent_agent')
-      expect_multiple_regexes(result: result, regexes: [%r{puppetlabs.mco_rpc/unknown-agent}])
+      result = run_task(task_name: 'mco_rpc', params: 'agent=nonexistent_agent action=foo', format: 'json')
+      expect(result['status']).to eq('failure')
+      expect(result['result']['_error']['kind']).to eq('puppetlabs.mco_rpc/unknown-agent')
     end
 
     it 'runs the package agent without data' do
-      result = run_task(task_name: 'mco_rpc', params: 'agent=package action=count')
-      expect_multiple_regexes(result: result, regexes: [%r{output}, %r{exitcode[\w:"].0}])
+      result = run_task(task_name: 'mco_rpc', params: 'agent=package action=count', format: 'json')
+      expect(result['status']).to eq('success')
+      expect(result['result']['exitcode']).to eq(0)
+      expect(result['result']['output']).to match(/\d+/)
     end
 
     it 'errors with missing params' do
-      result = run_task(task_name: 'mco_rpc', params: 'agent=package action=install')
-      expect_multiple_regexes(result: result, regexes: [/puppetlabs.mco_rpc\/mco_error/, %r{Action install needs a package argument}])
+      result = run_task(task_name: 'mco_rpc', params: 'agent=package action=install', format: 'json')
+      expect(result['status']).to eq('failure')
+      expect(result['result']['_error']['kind']).to eq('puppetlabs.mco_rpc/mco_error')
+      expect(result['result']['_error']['msg']).to eq('Action install needs a package argument')
     end
 
     it 'runs the package agent with data' do
       params = { agent: 'package',
                  action: 'install',
                  data: { package: 'nano' } }
-      result = run_task(task_name: 'mco_rpc', params: params)
-      expect_multiple_regexes(result: result, regexes: [%r{output}, %r{release}])
+      result = run_task(task_name: 'mco_rpc', params: params, format: 'json')
+      expect(result['status']).to eq('success')
+      expect(result['result']).to include('output', 'release')
     end
 
     it 'runs the package agent with arguments' do
       params = { agent: 'package',
                  action: 'install',
                  arguments: 'package=nano' }
-      result = run_task(task_name: 'mco_rpc', params: params)
-      expect_multiple_regexes(result: result, regexes: [%r{output}, %r{release}])
+      result = run_task(task_name: 'mco_rpc', params: params, format: 'json')
+      expect(result['status']).to eq('success')
+      expect(result['result']).to include('output', 'release')
     end
   end
 end

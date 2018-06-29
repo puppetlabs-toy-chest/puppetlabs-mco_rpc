@@ -4,14 +4,23 @@
 #### Table of Contents
 
 1. [Description](#description)
-2. [Setup - The basics of getting started with mco_rpc](#setup)
-3. [Usage - Configuration options and additional functionality](#usage)
-5. [Limitations - OS compatibility, etc.](#limitations)
+1. [Requirements](#requirements)
+1. [Setup - The basics of getting started with mco_rpc](#setup)
+1. [Usage - Configuration options and additional functionality](#usage)
+1. [Limitations - OS compatibility, etc.](#limitations)
 
 ## Description
 
 The `mco_rpc` module contains a task to run installed rpc agents through Puppet
 Tasks with either bolt or the Puppet Orchestrator.
+
+## Requirements
+
+This module is compatible with Puppet Enterprise and Puppet Bolt.
+
+* To run tasks with Puppet Enterprise, PE 2017.3 or later must be installed on the machine from which you are running task commands. Machines receiving task requests must be Puppet agents.
+
+* To run tasks with Puppet Bolt, Bolt 0.5 or later must be installed on the machine from which you are running task commands. Machines receiving task requests must have SSH or WinRM services enabled.
 
 ## Setup
 
