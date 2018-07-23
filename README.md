@@ -8,7 +8,7 @@
 1. [Setup - The basics of getting started with mco_rpc](#setup)
 1. [Usage - Configuration options and additional functionality](#usage)
 1. [Limitations - OS compatibility, etc.](#limitations)
-1. [Known Issues - MCO Deprecation](#known_issues)
+1. [Known Issues - MCO Deprecation](#known-issues)
 
 ## Description
 
@@ -75,17 +75,13 @@ If you use `mco` commands to call agents, set up the puppetlabs/mco_rpc module a
 
 1. To use the puppetlabs/mco_rpc module, add this declaration to your Puppetfile:
     ```
-    mod 'puppetlabs-mco_rpc', '0.1.0'
+    mod 'puppetlabs-mco_rpc', '0.1.1'
     ```
 2. In the PE console, run a task instead of using the mco command. For example, if you use the command `mco puppet disable` replace it with the following Puppet task:
-  
-  a. In the Run section, click **Task**.
-  
-  b. In the Task field, select **mco_rpc**.
-  
-  c. Add the agent parameter and assign it a value of **puppet**.
-  
-  d. Add the action parameter and assign it a value of **disable**.
+    1. In the Run section, click **Task**.
+    1. In the Task field, select **mco_rpc**.
+    1. Add the agent parameter and assign it a value of **puppet**.
+    1. Add the action parameter and assign it a value of **disable**.
   
 3. In the Inventory list, select the targets for the task.
 4. Click **Run job**.
