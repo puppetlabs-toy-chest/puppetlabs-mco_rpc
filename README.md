@@ -8,6 +8,7 @@
 1. [Setup - The basics of getting started with mco_rpc](#setup)
 1. [Usage - Configuration options and additional functionality](#usage)
 1. [Limitations - OS compatibility, etc.](#limitations)
+1. [Known Issues - MCO Deprecation](#known_issues)
 
 ## Description
 
@@ -64,3 +65,27 @@ puppet-task run mco_rpc $TARGETS agent=package action=install arguments='package
 
 This is a pre `1.0.0` release and future versions may have breaking changes.
 This relies on the Puppet agent packaged ruby and the MCO gem to run.
+
+## Known Issues
+Puppet Enterprise 2018.1 is the last release to support MCollective. While PE 2018.1 remains supported, Puppet will continue to address security issues for MCollective. Feature development has been discontinued. Future releases of PE will not include MCollective. For more information, see the [Puppet Enterprise support lifecycle](https://puppet.com/misc/puppet-enterprise-lifecycle).
+
+If you use `mco` commands to call agents, set up the puppetlabs/mco_rpc module and create individual Puppet tasks to replace each command that you use.
+
+### Run MCollective RPC agents through Puppet tasks
+
+1. To use the puppetlabs/mco_rpc module, add this declaration to your Puppetfile:
+    ```
+    mod 'puppetlabs-mco_rpc', '0.1.0'
+    ```
+2. In the PE console, run a task instead of using the mco command. For example, if you use the command `mco puppet disable` replace it with the following Puppet task:
+  
+  a. In the Run section, click **Task**.
+  
+  b. In the Task field, select **mco_rpc**.
+  
+  c. Add the agent parameter and assign it a value of **puppet**.
+  
+  d. Add the action parameter and assign it a value of **disable**.
+  
+3. In the Inventory list, select the targets for the task.
+4. Click **Run job**.
